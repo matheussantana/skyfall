@@ -2,7 +2,7 @@
 
 ### Developing
 
-If you are interested in being a contributor and want to get involved in developing this project or [help out](https://cpco.io/help-out) with our other projects, we would love to hear from you! Shoot us an [email][email].
+If you are interested in being a contributor and want to get involved in developing this project or [help out]() with our other projects, we would love to hear from you! Shoot us an [email][email].
 
 In general, PRs are welcome. We follow the typical "fork-and-pull" Git workflow.
 
