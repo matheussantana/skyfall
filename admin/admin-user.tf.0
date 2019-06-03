@@ -1,0 +1,59 @@
+############################
+# User/Service Credentials #
+# Module: CreateAcessProfile
+############################
+
+module "aws-user" {
+  source = "../modules/security/core/iam/user"
+  username = "service-user"
+  namespace = var.namespace
+}
+
+output "aws-user" {
+  value = module.aws-user
+}
+
+module "aws-role" {
+  source = "../modules/security/core/iam/role"
+  role_name = "service-role"
+  namespace = var.namespace
+  target_service = "ecs-tasks.amazonaws.com"
+  access_level = "Allow"
+}
+
+output "aws-role" {
+  value = module.aws-role
+}
+
+
+###
+# Policy
+# Module: GrantAccessTo_ACL
+###
+
+module "aws-policy" {
+  source = "../modules/security/core/iam/policy"
+  policy_name = "dynamodb_access"
+  namespace = var.namespace
+  access_level = "Allow"
+  target_service = "dynamodb"
+  operation_list = ["*","action1","action2"]
+  target_resource = ["arn:aws:dynamodb:*:*:table/TableA", "arn:aws:dynamodb:*:*:table/TableB"]
+
+}
+
+
+resource "aws_iam_policy_attachment" "policy-attach" {
+  name       = "policy-attachment"
+  users      = ["${module.aws-user.user["name"]}"]
+  roles      = ["${module.aws-role.access_role["name"]}"]
+  policy_arn = module.aws-policy.policy_id
+}
+
+output "policy" {
+  value = module.aws-policy.policy
+}
+
+
+#module "aws-grant-access" {}
+#module "dynamo" {}

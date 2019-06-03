@@ -1,0 +1,16 @@
+profile = "service-admin-lab"
+region = "us-east-1"
+namespace = "service"
+account-id = "0000-0000-0000"
+tags = {
+    BusinessUnit       = "ACME LTDA"
+    ComplianceList     = ""
+    ComplianceRequired = "0"
+    CriticalLevel      = "9"
+    Email              = "l-acme@acme.com"
+    EscalationList     = "userid1/userid2/userid3"
+    FilaIm             = "l-acme"
+    Product            = "ACME Product"
+    Slack              = "acme-prod"
+    Team               = "acme-devops"
+}
