@@ -1,0 +1,47 @@
+version: "3"
+services:
+  infra-workflow-manager:
+    build: srv
+    # configure/setup service environments
+
+    # security & network
+    #command: ./tmp/init.sh cfg-srv init security
+    #command: ./tmp/init.sh cfg-srv bootstrap security
+
+    # create lab environments
+
+    #command: ./tmp/init.sh srv-adm security bootstrap lab
+    #command: ./tmp/init.sh srv-adm security init lab
+
+    # deploy & remove service environments
+
+    #command: ./tmp/init.sh srv-adm security status lab
+    #command: ./tmp/init.sh srv-adm security deploy lab
+    #command: ./tmp/init.sh srv-adm security remove lab
+
+
+    # infra
+    # configure/setup service environments
+
+    #command: ./tmp/init.sh cfg-srv init infra
+
+    # create lab environments
+
+    #command: ./tmp/init.sh srv-adm infra bootstrap lab
+
+    # deploy & remove service environments
+    #command: ./tmp/init.sh srv-adm infra init lab
+
+    #command: ./tmp/init.sh srv-adm infra status lab
+    command: ./tmp/init.sh srv-adm infra deploy lab
+    #command: ./tmp/init.sh srv-adm infra remove lab
+
+
+    volumes:
+     - ./srv/data:/data
+     - /var/run:/var/run
+     - $HOME/.aws/:/root/.aws/
+     - ../../sdk/:/data/sdk/
+
+    environment:
+     - ENV_MOCK=mock
