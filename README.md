@@ -2,6 +2,144 @@
 
 Skyfall is a open-source SDK library (“abstraction layer”) for scheduling and management of high-available, secure and scalable infrastructure resources.
 
+## Principles
+
+* Simple to read, modify and run.
+* Easy to extend by making reusable components blocks.
+* Test and Quality control.
+* Secure and Resilient.
+* Dynamically scalable.
+
+## Compatible with
+For now we only support AWS Cloud provider. Other will be implemented in the future.
+
+## Overview
+Allow to easily Create/Update/Replace/Delete infrastructure resources classes (such as databases, middleware queues, memory caches, file services ,etc.) through a mark-up template language.
+On top of terraform (For now skyfall is based on terraform >= 12.) we have implemented several classes of components, templates and pipelines tools that manages and schedule infrastructure resources running either locally or at any (future) IT infra. provider (like AWS Cloud).
+The classes (or modules in terraform) brings an greater level of abstraction to the developer/admin as it automates many of the complexity in setting up an continuous deployment pipeline (CI/CD as in devops) or an entire infrastructure environment that follows best practices (high-available & scalable, service continuity, secure & resilience)
+
+Resource class file-server (AWS S3 Bucket):
+
+```hcl-terraform
+module "buckets3-backend" {
+  source = "../modules/fileserver/core/bucket-s3"
+
+  namespace = var.namespace
+  partition-key = "s3-fileserver-mock"
+  tags = var.tags
+
+}
+
+output "buckets3"{
+  value = module.buckets3-backend
+}
+```
+```hcl-terraform
+############################
+# User/Service Credentials #
+# Module: CreateAcessProfile
+############################
+
+module "CreateAcessProfile_AdminProfile" {
+  source = "../modules/security/ext/auth/CreateAccessProfile"
+  username = "admin-user-app-mock"
+  namespace = var.namespace
+  target_service = "ec2.amazonaws.com"
+  access_level = "Allow"
+  role_name = "admin-role-app-mock"
+}
+
+output "AuthProfile_AdminProfile" {
+  value = module.CreateAcessProfile_AdminProfile
+}
+
+
+###
+# Policy S3 - Default Backend Storage
+# Module: GrantAccessTo_ACL
+###
+
+module "S3_GrantAccessTo_ACL_Adm" {
+  source = "../modules/security/ext/auth/GrantAccessTo_ACL"
+  policy_name = "s3_acl"
+  namespace = var.namespace
+  access_level = "Allow"
+  target_service = "s3"
+  operation_list = ["*"]
+  prefix = ""
+
+  target_resource_id_list = ["default-backend-storage*", "default-backend-storage/*"]
+
+  #target_resource_id_list = ["default-backend-storage-${random_integer.value.id}*", "default-backend-storage-${random_integer.value.id}/*"]
+  #target_resource_id_list = ["bucketTestA*", "bucketTestA-010111*"]
+
+  region = ""
+  account-id = ""
+
+  target_user_name = module.CreateAcessProfile_AdminProfile.aws-user.user.name
+  target_role_name = module.CreateAcessProfile_AdminProfile.aws-role.access_role.name
+}
+
+output "S3_AcessControl_PolicyRule_Adm" {
+  value = module.S3_GrantAccessTo_ACL_Adm.policy
+}
+```
+
+Input parameters (terraform.tfvars):
+
+```yaml
+profile = "infra-deploy-admin-lab"
+region = "us-east-1"
+namespace = "service"
+account-id = "00000000"
+tags = {
+    BusinessUnit       = "ACME LTDA"
+    ComplianceList     = ""
+    ComplianceRequired = "0"
+    CriticalLevel      = "9"
+    Email              = "l-acme@acme.com"
+    EscalationList     = "userid1/userid2/userid3"
+    FilaIm             = "l-acme"
+    Product            = "ACME Product"
+    Slack              = "acme-prod"
+    Team               = "acme-devops"
+}
+
+```
+```yaml
+version: "3"
+services:
+  infra-workflow-manager:
+    build: srv
+
+
+    # infra
+    # configure/setup service environments
+
+    #command: ./tmp/init.sh cfg-srv init infra
+
+    # create lab environments
+
+    #command: ./tmp/init.sh srv-adm infra bootstrap lab
+
+    # deploy & remove service environments
+    #command: ./tmp/init.sh srv-adm infra init lab
+
+    #command: ./tmp/init.sh srv-adm infra status lab
+    command: ./tmp/init.sh srv-adm infra deploy lab
+    #command: ./tmp/init.sh srv-adm infra remove lab
+
+    ...
+
+```
+
+Deploy
+
+```bash
+ $ ./start-workflow.sh
+```
+
+
 ## Getting Started
 
 These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See deployment for notes on how to deploy the project on a live system.
@@ -553,3 +691,9 @@ See [LICENSE](LICENSE) for full details.
 
 ## Acknowledgments
 
+## TODO
+
+* More logs, metrics and alerts...
+* Network layer (VPC and subnets).
+* More examples and improve docs.
+* ...
