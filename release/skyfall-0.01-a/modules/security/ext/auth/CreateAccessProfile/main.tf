@@ -4,7 +4,7 @@
 ############################
 
 module "aws-user" {
-  source = "../../../core/iam/user"
+  source = "..\/..\/..\/core\/iam\/user"
   username = var.username
   namespace = var.namespace
 }
@@ -18,7 +18,7 @@ variable "username" {
 }
 
 module "aws-role" {
-  source = "../../../core/iam/role"
+  source = "..\/..\/..\/core\/iam\/role"
   role_name = var.role_name
   namespace = var.namespace
   target_service = var.target_service

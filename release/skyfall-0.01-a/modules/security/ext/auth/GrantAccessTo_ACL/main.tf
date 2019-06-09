@@ -28,7 +28,7 @@ variable "region" {
 }
 
 module "aws-policy" {
-  source = "../../../core/iam/policy"
+  source = "..\/..\/..\/core\/iam\/policy"
   policy_name = var.policy_name
   namespace = var.namespace
   access_level = var.access_level

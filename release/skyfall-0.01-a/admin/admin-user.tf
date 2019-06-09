@@ -4,7 +4,7 @@
 ############################
 
 module "CreateAcessProfile_AdminProfile" {
-  source = "../modules/security/ext/auth/CreateAccessProfile"
+  source = "..\/moduless\/security\/ext\/auth\/CreateAccessProfile"
   username = "admin-user"
   namespace = var.namespace
   target_service = "ec2.amazonaws.com"
@@ -23,7 +23,7 @@ output "AuthProfile_AdminProfile" {
 ###
 
 module "GrantAccessTo_ACL_Adm" {
-  source = "../modules/security/ext/auth/GrantAccessTo_ACL"
+  source = "..\/moduless\/security\/ext\/auth\/GrantAccessTo_ACL"
   policy_name = "sqs_access"
   namespace = var.namespace
   access_level = "Allow"

@@ -1,5 +1,5 @@
 module "dynamodb" {
-  source = "../modules/security/core/dynamodb"
+  source = "..\/moduless\/security\/core\/dynamodb"
 
   db_attributes = {
     id    = "S"

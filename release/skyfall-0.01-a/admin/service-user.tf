@@ -4,7 +4,7 @@
 ############################
 
 module "CreateAcessProfile_ServiceProfile" {
-  source = "../modules/security/ext/auth/CreateAccessProfile"
+  source = "..\/moduless\/security\/ext\/auth\/CreateAccessProfile"
   username = "service-user"
   namespace = var.namespace
   target_service = "ec2.amazonaws.com"
@@ -23,7 +23,7 @@ output "AuthProfile_ServiceProfile" {
 ###
 
 module "GrantAccessTo_ACL_ServiceProfile" {
-  source = "../modules/security/ext/auth/GrantAccessTo_ACL"
+  source = "..\/moduless\/security\/ext\/auth\/GrantAccessTo_ACL"
   policy_name = "dynamodb_access"
   namespace = var.namespace
   access_level = "Allow"
